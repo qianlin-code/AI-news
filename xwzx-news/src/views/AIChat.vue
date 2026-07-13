@@ -61,10 +61,10 @@ const userInput = ref('');
 const messagesContainer = ref(null);
 const isLoading = ref(false);
 
-// 从配置文件获取API设置
-const apiEndpoint = ref(aiChatConfig.apiEndpoint);
-const apiKey = ref(aiChatConfig.apiKey);
-const model = ref(aiChatConfig.model);
+// AI 聊天配置（从环境变量读取）
+const apiEndpoint = aiChatConfig.apiEndpoint;
+const apiKey = aiChatConfig.apiKey;
+const model = aiChatConfig.model;
 
 // 格式化消息内容（支持Markdown）
 const formatMessage = (content) => {
@@ -78,7 +78,7 @@ const sendMessage = async () => {
   if (!userInput.value.trim() || isLoading.value) return;
   
   // 检查API设置
-  if (!apiKey.value || apiKey.value === 'your-api-key-here') {
+  if (!apiKey || apiKey === 'your-api-key-here') {
     showToast('API Key未配置，请联系管理员');
     return;
   }
@@ -117,15 +117,15 @@ const fetchAIResponse = async (userMessage) => {
     .map(msg => ({ role: msg.role, content: msg.content }));
   
   try {
-    const response = await fetch(apiEndpoint.value, {
+    const response = await fetch(apiEndpoint, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${apiKey.value}`,
+        'Authorization': `Bearer ${apiKey}`,
         'X-DashScope-SSE': 'enable' // 添加阿里云DashScope所需的SSE头
       },
       body: JSON.stringify({
-        model: model.value,
+        model: model,
         messages: allMessages,
         stream: true
       })

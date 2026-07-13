@@ -1,7 +1,6 @@
-import { defineStore } from 'pinia';
-import axios from 'axios';
-import { useUserStore } from '../user';
-import { apiConfig } from '../../config/api';
+import { defineStore } from 'pinia'
+import request from '../../utils/request'
+import { useUserStore } from '../user'
 
 export const useFavoriteStore = defineStore('favorite', {
   state: () => ({
@@ -21,7 +20,7 @@ export const useFavoriteStore = defineStore('favorite', {
       // 检查用户是否登录
       if (!userStore.getLoginStatus) {
         // return { success: false, message: '请先登录' };
-        console.log('用户未登录，返回本地状态');
+        // 未登录，返回本地状态
         return { 
           success: true, 
           isFavorite: this.isFavorite(newsId),
@@ -32,10 +31,7 @@ export const useFavoriteStore = defineStore('favorite', {
       
         try {
           this.loading = true;
-          const response = await axios.get(`${apiConfig.baseURL}/api/favorite/check`, { 
-            headers: { 
-              Authorization: `Bearer ${userStore.token}` 
-            },
+          const response = await request.get(`/api/favorite/check`, {
             params: { newsId }
           });
           
@@ -72,14 +68,7 @@ export const useFavoriteStore = defineStore('favorite', {
       
       try {
         this.loading = true;
-        const response = await axios.post(`${apiConfig.baseURL}/api/favorite/add`, 
-          { newsId },
-          { 
-            headers: { 
-              Authorization: `Bearer ${userStore.token}` 
-            } 
-          }
-        );
+        const response = await request.post(`/api/favorite/add`, { newsId });
         
         if (response.data.code === 200) {
           return { success: true, data: response.data.data };
@@ -105,11 +94,7 @@ export const useFavoriteStore = defineStore('favorite', {
       
       try {
         this.loading = true;
-        const response = await axios.delete(`${apiConfig.baseURL}/api/favorite/remove?newsId=${newsId}`, { 
-          headers: { 
-            Authorization: `Bearer ${userStore.token}` 
-          }
-        });
+        const response = await request.delete(`/api/favorite/remove?newsId=${newsId}`);
         
         if (response.data.code === 200) {
           return { success: true };
@@ -192,11 +177,7 @@ export const useFavoriteStore = defineStore('favorite', {
       
       try {
         this.loading = true;
-        const response = await axios.delete(`${apiConfig.baseURL}/api/favorite/clear`, { 
-          headers: { 
-            Authorization: `Bearer ${userStore.token}` 
-          }
-        });
+        const response = await request.delete(`/api/favorite/clear`);
         
         if (response.data.code === 200) {
           // 清空本地收藏列表
@@ -230,28 +211,22 @@ export const useFavoriteStore = defineStore('favorite', {
     async getFavoriteListApi(page = 1, pageSize = 10) {
       const userStore = useUserStore();
       
-      console.log('getFavoriteListApi开始执行', {
-        isLoggedIn: userStore.getLoginStatus,
-        token: userStore.token ? '存在' : '不存在'
-      });
+      // 检查登录状态并获取收藏列表
       
       // 检查用户是否登录
       if (!userStore.getLoginStatus) {
-        console.log('用户未登录，无法获取收藏列表');
+        // 未登录，无法获取收藏列表
         return { success: false, message: '请先登录' };
       }
       
       try {
         this.loading = true;
-        console.log('准备发送API请求', `${apiConfig.baseURL}/api/favorite/list`);
-        const response = await axios.get(`${apiConfig.baseURL}/api/favorite/list`, { 
-          headers: { 
-            Authorization: `Bearer ${userStore.token}` 
-          },
+        // 发送API请求获取收藏列表
+        const response = await request.get(`/api/favorite/list`, {
           params: { page, pageSize }
         });
         
-        console.log('API响应数据:', response.data);
+        // 处理API响应数据
         
         if (response.data.code === 200) {
           // 更新本地收藏列表

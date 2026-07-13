@@ -1,6 +1,5 @@
-import { defineStore } from 'pinia';
-import axios from 'axios';
-import { apiConfig } from '../config/api';
+import { defineStore } from 'pinia'
+import request from '../utils/request'
 
 export const useUserStore = defineStore('user', {
   state: () => ({
@@ -21,7 +20,7 @@ export const useUserStore = defineStore('user', {
     async login(userData) {
       try {
         // 发送登录请求
-        const response = await axios.post(`${apiConfig.baseURL}/api/user/login`, {
+        const response = await request.post(`/api/user/login`, {
           username: userData.username,
           password: userData.password
         });
@@ -59,7 +58,7 @@ export const useUserStore = defineStore('user', {
     async register(userData) {
       try {
         // 发送注册请求
-        const response = await axios.post(`${apiConfig.baseURL}/api/user/register`, {
+        const response = await request.post(`/api/user/register`, {
           username: userData.username,
           password: userData.password
         });
@@ -112,12 +111,7 @@ export const useUserStore = defineStore('user', {
         }
         
         // 发送获取用户信息请求
-        const response = await axios.get(`${apiConfig.baseURL}/api/user/info`, {
-          headers: {
-            // Authorization: `Bearer ${this.token}`
-            Authorization: `Bearer ${this.token}`
-          }
-        });
+        const response = await request.get(`/api/user/info`);
         
         // 检查响应状态
         if (response.data && response.data.code === 200) {
@@ -156,14 +150,7 @@ export const useUserStore = defineStore('user', {
         }
         
         // 发送更新个人简介请求
-        const response = await axios.put(`${apiConfig.baseURL}/api/user/update`, 
-          { bio },
-          {
-            headers: {
-              Authorization: `Bearer ${this.token}`
-            }
-          }
-        );
+        const response = await request.put(`/api/user/update`, { bio });
         
         // 检查响应状态
         if (response.data && response.data.code === 200) {
@@ -201,17 +188,10 @@ export const useUserStore = defineStore('user', {
         }
         
         // 发送修改密码请求
-        const response = await axios.put(`${apiConfig.baseURL}/api/user/password`, 
-          { 
-            oldPassword,
-            newPassword 
-          },
-          {
-            headers: {
-              Authorization: `Bearer ${this.token}`
-            }
-          }
-        );
+        const response = await request.put(`/api/user/password`, {
+          oldPassword,
+          newPassword
+        });
         
         // 检查响应状态
         if (response.data && response.data.code === 200) {

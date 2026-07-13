@@ -1,7 +1,6 @@
-import { defineStore } from 'pinia';
-import axios from 'axios';
-import { useUserStore } from '../user';
-import { apiConfig } from '../../config/api';
+import { defineStore } from 'pinia'
+import request from '../../utils/request'
+import { useUserStore } from '../user'
 
 export const useHistoryStore = defineStore('history', {
   state: () => ({
@@ -23,14 +22,7 @@ export const useHistoryStore = defineStore('history', {
       }
       
       try {
-        const response = await axios.post(`${apiConfig.baseURL}/api/history/add`, 
-          { newsId },
-          { 
-            headers: { 
-              Authorization: `Bearer ${userStore.token}` 
-            } 
-          }
-        );
+        const response = await request.post(`/api/history/add`, { newsId });
         
         if (response.data.code === 200) {
           return { success: true, data: response.data.data };
@@ -80,21 +72,17 @@ export const useHistoryStore = defineStore('history', {
       
       // 检查用户是否登录
       if (!userStore.getLoginStatus) {
-        console.log('清空浏览历史API：用户未登录，使用本地操作');
+        // 未登录，使用本地操作
         this.clearHistory();
         return { success: true, isLocal: true };
       }
       
       try {
-        console.log('清空浏览历史API：开始请求');
-        const response = await axios.delete(`${apiConfig.baseURL}/api/history/clear`, { 
-          headers: { 
-            Authorization: `Bearer ${userStore.token}` 
-          } 
-        });
+        // 开始清空浏览历史请求
+        const response = await request.delete(`/api/history/clear`);
         
         if (response.data.code === 200) {
-          console.log('清空浏览历史API：清空成功');
+          // 清空成功
           // 更新本地历史记录
           this.clearHistory();
           return { success: true };
@@ -120,21 +108,17 @@ export const useHistoryStore = defineStore('history', {
       
       // 检查用户是否登录
       if (!userStore.getLoginStatus) {
-        console.log('删除浏览历史API：用户未登录，使用本地操作');
+        // 未登录，使用本地操作
         this.removeHistory(id);
         return { success: true, isLocal: true };
       }
       
       try {
-        console.log('删除浏览历史API：开始请求', id);
-        const response = await axios.delete(`${apiConfig.baseURL}/api/history/delete/${id}`, { 
-          headers: { 
-            Authorization: `Bearer ${userStore.token}` 
-          } 
-        });
+        // 开始删除浏览历史请求
+        const response = await request.delete(`/api/history/delete/${id}`);
         
         if (response.data.code === 200) {
-          console.log('删除浏览历史API：删除成功');
+          // 删除成功
           // 更新本地历史记录
           this.removeHistory(id);
           return { success: true };
@@ -167,17 +151,13 @@ export const useHistoryStore = defineStore('history', {
       
       // 检查用户是否登录
       if (!userStore.getLoginStatus) {
-        console.log('获取浏览历史API：用户未登录，使用本地数据');
+        // 未登录，使用本地数据
         return { success: false, message: '请先登录', isLocal: true };
       }
       
       try {
-        console.log('获取浏览历史API：开始请求');
-        const response = await axios.get(`${apiConfig.baseURL}/api/history/list`, { 
-          headers: { 
-            Authorization: `Bearer ${userStore.token}` 
-          } 
-        });
+        // 开始获取浏览历史请求
+        const response = await request.get(`/api/history/list`);
         
         if (response.data.code === 200) {
           // 正确获取list数组

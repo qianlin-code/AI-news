@@ -39,8 +39,6 @@ import { ref, computed, h, onMounted } from 'vue';
 import { useUserStore } from '../store/user';
 import { showDialog, showToast, showLoadingToast, showSuccessToast, showFailToast } from 'vant';
 import { useRouter } from 'vue-router';
-import axios from 'axios';
-import { apiConfig } from '../config/api';
 
 const router = useRouter();
 const userStore = useUserStore();
@@ -62,18 +60,14 @@ onMounted(async () => {
       duration: 0
     });
     
-    // console.log('获取用户信息，当前token:', userStore.token);
-    
-    // 使用新的 getUserInfoDetail 方法
+    // 获取用户信息详情
     const result = await userStore.getUserInfoDetail();
     
     // 手动关闭加载提示
     loadingInstance.close();
     
     if (result.success) {
-      console.log('获取用户信息成功:', userStore.userInfo);
-      // 显示成功提示
-      // showSuccessToast('获取用户信息成功');
+      // 用户信息获取成功
     } else {
       console.error('获取用户信息失败:', result.message);
       showFailToast(result.message || '获取用户信息失败');
@@ -203,8 +197,6 @@ const showBioDialog = () => {
         forbidClick: true,
         duration: 0
       });
-      
-      console.log('更新个人简介:', newBioValue.value);
       
       // 调用API更新个人简介
       const result = await userStore.updateUserBio(newBioValue.value);

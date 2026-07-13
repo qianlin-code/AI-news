@@ -111,12 +111,34 @@ const router = createRouter({
   routes
 })
 
+// 需要登录才能访问的路由
+const authRoutes = ['Favorite', 'History', 'Profile', 'Settings']
+
 // 全局前置守卫
 router.beforeEach((to, from, next) => {
   // 设置页面标题
-  document.title = to.meta.title || '新闻资讯'
-  
-  // 直接允许访问所有页面
+  document.title = to.meta.title ? `${to.meta.title} - AI掘金头条` : 'AI掘金头条'
+
+  // 需要登录的页面：检查是否有 token
+  if (authRoutes.includes(to.name)) {
+    let hasToken = false
+    try {
+      const raw = localStorage.getItem('user-store')
+      if (raw) {
+        const parsed = JSON.parse(raw)
+        hasToken = !!parsed.token
+      }
+    } catch {
+      hasToken = false
+    }
+
+    if (!hasToken) {
+      // 未登录，跳转到登录页
+      next({ name: 'Login', query: { redirect: to.fullPath } })
+      return
+    }
+  }
+
   next()
 })
 

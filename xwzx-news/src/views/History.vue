@@ -66,8 +66,7 @@ const goToNewsDetail = (id) => {
 const removeHistory = async (id) => {
   try {
     const result = await historyStore.removeHistoryApi(id);
-    console.log('删除单条历史记录结果:', result);
-    
+
     // 如果API请求失败且不是本地操作，则显示错误提示
     if (!result.success && !result.isLocal) {
       showDialog({
@@ -105,8 +104,7 @@ const onClickClear = async () => {
     if (action === 'confirm') {
       try {
         const result = await historyStore.clearHistoryApi();
-        console.log('清空历史记录结果:', result);
-        
+
         // 如果API请求失败且不是本地操作，则显示错误提示
         if (!result.success && !result.isLocal) {
           showDialog({
@@ -128,8 +126,7 @@ onMounted(async () => {
   // 先尝试从API获取浏览历史
   try {
     const result = await historyStore.getHistoryListApi();
-    console.log('浏览历史页面：API获取结果', result);
-    
+
     // 如果API请求失败或用户未登录，则从本地加载
     if (!result || !result.success) {
       historyStore.loadHistory();

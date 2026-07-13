@@ -1,7 +1,7 @@
 from datetime import datetime
 
+from sqlalchemy import delete, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, func, delete
 
 from models.history import History
 from models.news import News
@@ -49,17 +49,19 @@ async def get_list_history(
     has_more = (page * page_size) < total
     items = []
     for news, view_time in rows:
-        items.append({
-            "id": news.id,
-            "title": news.title,
-            "description": news.description,
-            "image": news.image,
-            "author": news.author,
-            "publishTime": news.publish_time,
-            "categoryId": news.category_id,
-            "views": news.views,
-            "viewTime": view_time,
-        })
+        items.append(
+            {
+                "id": news.id,
+                "title": news.title,
+                "description": news.description,
+                "image": news.image,
+                "author": news.author,
+                "publishTime": news.publish_time,
+                "categoryId": news.category_id,
+                "views": news.views,
+                "viewTime": view_time,
+            }
+        )
     return items, total, has_more
 
 

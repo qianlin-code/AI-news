@@ -1,0 +1,28 @@
+# ==================== Pre-commit 配置 ====================
+# 每次 git commit 时自动运行，不合格就拒绝提交
+#
+# 安装:    pre-commit install
+# 手动全量: pre-commit run --all-files
+# 强制跳过: git commit --no-verify
+# ========================================================
+
+repos:
+  - repo: local
+    hooks:
+      # ── Ruff 代码查错 + 自动修复 ──
+      - id: ruff-check
+        name: "ruff 代码检查"
+        entry: ruff check --fix
+        language: python
+        additional_dependencies: [ruff==0.15.21]
+        files: "^toutiao_backend/.*\\.py$"
+        types: [python]
+
+      # ── Ruff 代码格式化 ──
+      - id: ruff-format
+        name: "ruff 代码格式化"
+        entry: ruff format
+        language: python
+        additional_dependencies: [ruff==0.15.21]
+        files: "^toutiao_backend/.*\\.py$"
+        types: [python]

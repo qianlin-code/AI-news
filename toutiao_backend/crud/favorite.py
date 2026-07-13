@@ -1,4 +1,4 @@
-from sqlalchemy import select, delete, func
+from sqlalchemy import delete, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from models.favorite import Favorite
@@ -29,7 +29,9 @@ async def remove_news_favorite(db: AsyncSession, user_id: int, news_id: int) -> 
     return result.rowcount > 0
 
 
-async def get_favorite_list(db: AsyncSession, user_id: int, page: int = 1, page_size: int = 10) -> tuple[list, int]:
+async def get_favorite_list(
+    db: AsyncSession, user_id: int, page: int = 1, page_size: int = 10
+) -> tuple[list, int]:
     """分页获取用户收藏列表，返回 (行数据, 总条数)"""
     count_query = select(func.count()).where(Favorite.user_id == user_id)
     count_result = await db.execute(count_query)

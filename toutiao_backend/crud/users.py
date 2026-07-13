@@ -4,6 +4,7 @@ from datetime import datetime, timedelta
 from fastapi import HTTPException
 from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession
+
 from models.users import User, UserToken
 from schemas.users import UserRequest, UserUpdateRequest
 from utils import security
@@ -71,8 +72,10 @@ async def get_user_by_token(db: AsyncSession, token: str) -> User | None:
 
 async def update_user(db: AsyncSession, username: str, user_data: UserUpdateRequest) -> User:
     """更新用户信息（部分更新，只改传了的字段）"""
-    query = update(User).where(User.username == username).values(
-        **user_data.model_dump(exclude_unset=True, exclude_none=True)
+    query = (
+        update(User)
+        .where(User.username == username)
+        .values(**user_data.model_dump(exclude_unset=True, exclude_none=True))
     )
     result = await db.execute(query)
     await db.commit()

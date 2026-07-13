@@ -23,6 +23,9 @@ logs/
 *.swp
 *.swo
 
+# Ruff
+.ruff_cache/
+
 # 系统
 .DS_Store
 Thumbs.db

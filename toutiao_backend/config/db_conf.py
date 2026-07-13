@@ -1,4 +1,4 @@
-from sqlalchemy.ext.asyncio import async_sessionmaker, AsyncSession, create_async_engine
+from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 
 from config.settings import settings
 
@@ -7,14 +7,14 @@ async_engine = create_async_engine(
     settings.database_url,
     echo=settings.DB_ECHO,  # 打印执行的SQL日志，开发调试打开，生产关闭
     pool_size=settings.DB_POOL_SIZE,  # 连接池常驻连接数量
-    max_overflow=settings.DB_MAX_OVERFLOW  # 高峰期额外临时最大连接
+    max_overflow=settings.DB_MAX_OVERFLOW,  # 高峰期额外临时最大连接
 )
 
 # 异步会话工厂：批量生成数据库会话对象
 AsyncSessionLocal = async_sessionmaker(
     bind=async_engine,
     class_=AsyncSession,
-    expire_on_commit=False  # commit后不失效对象，查询后可继续使用模型实例
+    expire_on_commit=False,  # commit后不失效对象，查询后可继续使用模型实例
 )
 
 

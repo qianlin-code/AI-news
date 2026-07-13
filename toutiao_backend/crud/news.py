@@ -1,8 +1,8 @@
 """新闻相关的纯数据库操作（不含缓存逻辑）"""
-from datetime import datetime
 
-from sqlalchemy import select, func, update
+from sqlalchemy import func, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
+
 from models.news import Category, News
 
 
@@ -39,13 +39,12 @@ async def increase_news_views(db: AsyncSession, news_id: int) -> bool:
 
 async def get_related_news(db: AsyncSession, news_id: int, category_id: int, limit: int = 5) -> list[dict]:
     """查询同分类下的相关新闻，按浏览量和发布时间排序，返回字典列表"""
-    stmt = select(News).where(
-        News.category_id == category_id,
-        News.id != news_id
-    ).order_by(
-        News.views.desc(),
-        News.publish_time.desc()
-    ).limit(limit)
+    stmt = (
+        select(News)
+        .where(News.category_id == category_id, News.id != news_id)
+        .order_by(News.views.desc(), News.publish_time.desc())
+        .limit(limit)
+    )
     result = await db.execute(stmt)
     related_news = result.scalars().all()
     return [
@@ -58,5 +57,6 @@ async def get_related_news(db: AsyncSession, news_id: int, category_id: int, lim
             "publishTime": item.publish_time.isoformat() if item.publish_time else None,
             "categoryId": item.category_id,
             "views": item.views,
-        } for item in related_news
+        }
+        for item in related_news
     ]

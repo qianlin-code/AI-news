@@ -2,8 +2,8 @@
 全局配置管理
 使用 pydantic-settings 从 .env 文件加载配置，所有硬编码值迁移到此处
 """
+
 from pydantic_settings import BaseSettings
-from typing import List
 
 
 class Settings(BaseSettings):
@@ -36,7 +36,7 @@ class Settings(BaseSettings):
         )
 
     @property
-    def cors_origin_list(self) -> List[str]:
+    def cors_origin_list(self) -> list[str]:
         """解析逗号分隔的跨域来源列表"""
         return [origin.strip() for origin in self.CORS_ORIGINS.split(",")]
 

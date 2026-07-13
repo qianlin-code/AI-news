@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from pydantic import BaseModel, Field, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
 
 from schemas.base import NewsItemBase
 
@@ -18,10 +18,7 @@ class FavoriteNewsItemResponse(NewsItemBase):
     favorite_id: int = Field(alias="favoriteId")
     favorite_time: datetime = Field(alias="favoriteTime")
 
-    model_config = ConfigDict(
-        populate_by_name=True,
-        from_attributes=True
-    )
+    model_config = ConfigDict(populate_by_name=True, from_attributes=True)
 
 
 # 收藏列表整体分页响应模型
@@ -30,7 +27,4 @@ class FavoriteListResponse(BaseModel):
     total: int
     has_more: bool = Field(alias="hasMore")
 
-    model_config = ConfigDict(
-        populate_by_name=True,
-        from_attributes=True
-    )
+    model_config = ConfigDict(populate_by_name=True, from_attributes=True)

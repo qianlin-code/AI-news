@@ -1,0 +1,3 @@
+# Pytest 配置
+[tool.pytest.ini_options]
+testpaths = ["tests"]

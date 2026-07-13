@@ -3,10 +3,11 @@
 - 开发环境：控制台彩色输出 + 文件记录
 - 生产环境：仅文件记录（ERROR 及以上发告警）
 """
+
 import logging
 import sys
-from pathlib import Path
 from logging.handlers import RotatingFileHandler
+from pathlib import Path
 
 from config.settings import settings
 

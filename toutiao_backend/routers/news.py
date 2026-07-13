@@ -2,8 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from config.db_conf import get_db
-from crud import news
-from crud import news_cache
+from crud import news, news_cache
 from utils.response import success_response
 
 router = APIRouter(prefix="/api/news", tags=["news"])
@@ -17,10 +16,10 @@ async def get_categories(skip: int = 0, limit: int = 100, db: AsyncSession = Dep
 
 @router.get("/list")
 async def get_news_list(
-        category_id: int = Query(..., alias="categoryId"),
-        page: int = 1,
-        page_size: int = Query(10, alias="pageSize", le=100),
-        db: AsyncSession = Depends(get_db),
+    category_id: int = Query(..., alias="categoryId"),
+    page: int = 1,
+    page_size: int = Query(10, alias="pageSize", le=100),
+    db: AsyncSession = Depends(get_db),
 ):
     offset = (page - 1) * page_size
     news_list = await news_cache.get_news_list(db, category_id, offset, page_size)
@@ -48,9 +47,7 @@ async def get_news_detail(news_id=Query(..., alias="id"), db: AsyncSession = Dep
     if not views_res:
         raise HTTPException(status_code=404, detail="新闻不存在")
 
-    related_news = await news_cache.get_related_news_cached(
-        db, news_detail["id"], news_detail["category_id"]
-    )
+    related_news = await news_cache.get_related_news_cached(db, news_detail["id"], news_detail["category_id"])
 
     return success_response(
         data={

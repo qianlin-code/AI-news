@@ -1,4 +1,5 @@
 """新闻缓存 Key 管理 — 定义 Key 命名规范和读写函数"""
+
 from typing import Any
 
 from config.cache_conf import get_json_cache, set_cache
@@ -26,7 +27,9 @@ async def get_cache_news_list(category_id: int | None, page: int, size: int) -> 
     return await get_json_cache(key)
 
 
-async def set_cache_news_list(category_id: int | None, page: int, size: int, news_list: list[dict], expire: int = 1800) -> bool:
+async def set_cache_news_list(
+    category_id: int | None, page: int, size: int, news_list: list[dict], expire: int = 1800
+) -> bool:
     """写入新闻列表缓存（默认 30 分钟）"""
     category_part = category_id if category_id is not None else "all"
     key = f"{NEWS_LIST_PREFIX}{category_part}:{page}:{size}"

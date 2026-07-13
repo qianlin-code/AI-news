@@ -3,8 +3,8 @@ from typing import Any
 
 import redis.asyncio as redis
 
-from config.settings import settings
 from config.logger import get_logger
+from config.settings import settings
 
 logger = get_logger("redis")
 
@@ -14,7 +14,7 @@ redis_client = redis.Redis(
     port=settings.REDIS_PORT,
     db=settings.REDIS_DB,
     decode_responses=True,  # 将字节数据解码为字符串
-    protocol=2  # Redis 5.x 需要 RESP2 协议
+    protocol=2,  # Redis 5.x 需要 RESP2 协议
 )
 
 

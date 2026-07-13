@@ -1,14 +1,14 @@
-from fastapi import Header, Depends, HTTPException
+from fastapi import Depends, Header, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette import status
 
 from config.db_conf import get_db
 from crud import users
 
+
 # 整合 根据 Token 查询用户，返回用户
 async def get_current_user(
-    authorization: str = Header(..., alias="Authorization"),
-    db: AsyncSession = Depends(get_db)
+    authorization: str = Header(..., alias="Authorization"), db: AsyncSession = Depends(get_db)
 ):
     # Bearer xxxxxx
     # token = authorization.split(" ")[1]

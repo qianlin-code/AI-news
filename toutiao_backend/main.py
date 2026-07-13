@@ -1,14 +1,14 @@
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI
 from fastapi.openapi.docs import get_swagger_ui_html
 from starlette.middleware.cors import CORSMiddleware
 
-from contextlib import asynccontextmanager
-
-from config.settings import settings
-from config.logger import setup_logging, get_logger
 from config.db_conf import AsyncSessionLocal
+from config.logger import get_logger, setup_logging
+from config.settings import settings
 from middleware.logging import RequestLoggingMiddleware
-from routers import news, users, favorite, history
+from routers import favorite, history, news, users
 from utils.exception_handlers import register_exception_handlers
 
 # 初始化日志系统
@@ -19,10 +19,12 @@ logger = get_logger("app")
 async def warmup_cache():
     """启动时预热缓存：把分类和首页新闻列表提前加载到 Redis"""
     try:
-        from crud.news import get_categories as db_get_categories, get_news_list as db_get_news_list
-        from cache.news_cache import set_cache_categories, set_cache_news_list
-        from schemas.base import NewsItemBase
         from fastapi.encoders import jsonable_encoder
+
+        from cache.news_cache import set_cache_categories, set_cache_news_list
+        from crud.news import get_categories as db_get_categories
+        from crud.news import get_news_list as db_get_news_list
+        from schemas.base import NewsItemBase
 
         async with AsyncSessionLocal() as db:
             # 预热分类
@@ -36,7 +38,9 @@ async def warmup_cache():
             for cid in category_ids:
                 news = await db_get_news_list(db, cid, skip=0, limit=10)
                 if news:
-                    data = [NewsItemBase.model_validate(n).model_dump(mode="json", by_alias=False) for n in news]
+                    data = [
+                        NewsItemBase.model_validate(n).model_dump(mode="json", by_alias=False) for n in news
+                    ]
                     await set_cache_news_list(cid, page=1, size=10, news_list=data)
             logger.info(f"缓存预热: 新闻列表 {len(category_ids)} 个分类")
 

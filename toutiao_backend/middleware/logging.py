@@ -2,8 +2,9 @@
 请求日志中间件
 记录每个 HTTP 请求的方法、路径、状态码、耗时
 """
-import time
+
 import logging
+import time
 
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.requests import Request

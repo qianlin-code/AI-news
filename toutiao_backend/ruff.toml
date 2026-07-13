@@ -1,0 +1,55 @@
+# ==================== Ruff 代码质量配置 ====================
+# Ruff 同时做两件事:
+#   1. Lint（查错）—— 找未使用的 import、潜在 bug 等
+#   2. Format（排版）—— 统一代码风格
+#
+# 运行命令:
+#   ruff check .          # 检查代码问题
+#   ruff check . --fix    # 自动修复能修的问题
+#   ruff format .         # 自动格式化代码
+#   ruff check . --watch  # 边改边检查（开发时用）
+# ============================================================
+
+# 目标 Python 版本
+target-version = "py312"
+
+# ========== 行宽与缩进 ==========
+line-length = 110                          # 超过 110 字符会提示
+indent-width = 4                           # 缩进 4 个空格（Python 标准）
+
+# ========== 排除目录 ==========
+exclude = [
+    ".git",
+    ".venv",
+    ".idea",
+    "__pycache__",
+    "logs",
+    "node_modules",
+]
+
+# ========== 启用的检查规则 ==========
+[lint]
+select = [
+    "E", # pycodestyle 错误（语法级错误）
+    "W", # pycodestyle 警告（风格问题）
+    "F", # Pyflakes（未使用的 import、未定义的变量等）
+    "I", # isort（import 排序规则）
+    "N", # pep8-naming（命名规范：类名大驼峰、函数名小写下划线）
+    "UP", # pyupgrade（提示你改用新版 Python 语法）
+    "B", # flake8-bugbear（常见 bug 模式检查）
+]
+
+# 忽略某些不需要的规则
+ignore = [
+    "E501", # 行太长交给 formatter 处理，lint 不报
+    "B008", # FastAPI 路由函数参数里直接写默认值很常见，不报
+]
+
+# ========== 格式化配置 ==========
+[format]
+# 双引号还是单引号？保持 AI 能看懂就行，用双引号
+quote-style = "double"
+# 多行列表/参数末尾加逗号
+skip-magic-trailing-comma = false
+# 行宽（和上面保持一致）
+line-ending = "auto"

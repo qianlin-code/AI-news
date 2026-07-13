@@ -1,7 +1,6 @@
-from typing import Optional
-
-from pydantic import BaseModel, Field, ConfigDict
 from datetime import datetime
+
+from pydantic import BaseModel, ConfigDict, Field
 
 
 # 添加浏览历史——请求体
@@ -18,7 +17,7 @@ class HistoryResponse(BaseModel):
 
     model_config = ConfigDict(
         from_attributes=True,  # 允许从 ORM 对象取值
-        populate_by_name=True  # 兼容 alias 和字段名
+        populate_by_name=True,  # 兼容 alias 和字段名
     )
 
 
@@ -26,8 +25,8 @@ class HistoryResponse(BaseModel):
 class HistoryListItem(BaseModel):
     id: int
     title: str
-    description: Optional[str] = None
-    image: Optional[str] = None
+    description: str | None = None
+    image: str | None = None
     publish_time: datetime = Field(..., alias="publishTime")
     category_id: int = Field(..., alias="categoryId")
     views: int

@@ -3,6 +3,7 @@
 - 开发模式：返回详细错误信息（堆栈、路径）
 - 生产模式：返回简化信息，不泄露内部细节
 """
+
 import traceback
 
 from fastapi import HTTPException, Request
@@ -11,8 +12,8 @@ from fastapi.responses import JSONResponse
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 from starlette import status
 
-from config.settings import settings
 from config.logger import get_logger
+from config.settings import settings
 
 logger = get_logger("exception")
 

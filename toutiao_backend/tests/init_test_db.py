@@ -48,16 +48,16 @@ with sync_engine.connect() as conn:
 
     conn.execute(
         text("""
-        INSERT INTO news_category (name, sort_order) VALUES
-        ('科技', 1),
-        ('财经', 2),
-        ('体育', 3)
+        INSERT INTO news_category (name, sort_order, created_at, updated_at) VALUES
+        ('科技', 1, NOW(), NOW()),
+        ('财经', 2, NOW(), NOW()),
+        ('体育', 3, NOW(), NOW())
     """)
     )
 
     conn.execute(
         text("""
-        INSERT INTO news (title, description, content, author, category_id, views, publish_time) VALUES
+        INSERT INTO news (title, description, content, author, category_id, views, publish_time, created_at, updated_at) VALUES
         (
             'AI技术取得重大突破',
             '人工智能领域迎来新进展',
@@ -65,6 +65,8 @@ with sync_engine.connect() as conn:
             '测试作者',
             1,
             100,
+            NOW(),
+            NOW(),
             NOW()
         ),
         (
@@ -74,6 +76,8 @@ with sync_engine.connect() as conn:
             '财经记者',
             2,
             50,
+            NOW(),
+            NOW(),
             NOW()
         )
     """)

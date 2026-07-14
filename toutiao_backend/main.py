@@ -8,7 +8,7 @@ from config.db_conf import AsyncSessionLocal
 from config.logger import get_logger, setup_logging
 from config.settings import settings
 from middleware.logging import RequestLoggingMiddleware
-from routers import favorite, history, news, users
+from routers import favorite, health, history, news, users
 from utils.exception_handlers import register_exception_handlers
 
 # 初始化日志系统
@@ -99,6 +99,7 @@ async def root():
 
 
 # 注册路由
+app.include_router(health.router)
 app.include_router(news.router)
 app.include_router(users.router)
 app.include_router(favorite.router)

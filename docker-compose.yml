@@ -1,0 +1,67 @@
+# ============================================
+# docker-compose.yml — AI 掘金头条全栈环境
+# 定义了三组服务：MySQL、Redis、Python 应用
+# ============================================
+services:
+  db:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: test_root_pwd
+      MYSQL_DATABASE: news_app_test
+    ports:
+      - "3307:3306"
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-u", "root", "--password=test_root_pwd"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 60s
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6380:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  app:
+    build: ./toutiao_backend
+    ports:
+      - "8000:8000"
+    environment:
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_USER: root
+      DB_PASSWORD: test_root_pwd
+      DB_NAME: news_app_test
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      CORS_ORIGINS: "http://localhost:5173"
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  init-db:
+    build: ./toutiao_backend
+    command: python tests/init_test_db.py
+    environment:
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_USER: root
+      DB_PASSWORD: test_root_pwd
+      DB_NAME: news_app_test
+    depends_on:
+      db:
+        condition: service_healthy
+    profiles:
+      - init
+
+volumes:
+  mysql_data:

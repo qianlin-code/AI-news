@@ -22,3 +22,5 @@ python-dotenv==1.2.2
 
 # 类型
 typing_extensions==4.16.0
+pytest>=8.0
+httpx2>=2.5.0

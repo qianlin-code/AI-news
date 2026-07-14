@@ -14,6 +14,7 @@ router = APIRouter(tags=["health"])
 
 # 记录服务启动时间（用于计算 uptime）
 START_TIME = time.time()
+APP_VERSION = "v1.0.0"
 
 
 @router.get("/health")
@@ -22,6 +23,7 @@ async def health_check():
     health_data = {
         "status": "ok",
         "service": "AI掘金头条",
+        "version": APP_VERSION,
         "uptime_seconds": round(time.time() - START_TIME, 1),
         "checks": {
             "api": "ok",

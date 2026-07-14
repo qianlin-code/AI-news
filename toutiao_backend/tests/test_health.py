@@ -15,6 +15,7 @@ def test_health_check(client):
     data = json_data["data"]
     assert data["status"] == "ok"
     assert data["service"] == "AI掘金头条"
+    assert data["version"] == "v1.0.0"
     assert "uptime_seconds" in data
     assert isinstance(data["uptime_seconds"], (int, float))
     assert data["checks"]["api"] == "ok"
